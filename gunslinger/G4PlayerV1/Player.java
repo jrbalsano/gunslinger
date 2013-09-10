@@ -84,23 +84,7 @@ public class Player extends gunslinger.sim.Player
         }
 
         // Shoot or not in this round?
-        current = 1;
-        potential = 1;
-        for(int i = 0; i < nplayers; i++) {
-          if (alive[i] && Arrays.asList(friends).contains(i)) {
-            current++;
-            potential++;
-          }
-          else if (!alive[i] && Arrays.asList(enemies).contains(i)) {
-            current++;
-            potential++;
-          }
-          else if (alive[i] && Arrays.asList(enemies).contains(i)) {
-            potential++;
-          }
-        }
-
-        boolean shoot = current/potential < .5;
+        boolean shoot = gen.nextDouble() < ShootRate;
 
         if (!shoot)
             return -1;
