@@ -94,7 +94,7 @@ public class Player extends gunslinger.sim.Player
         int max = 0;
         int target = -1;
         for (int i = 0; i != nplayers; ++i) {
-            if (i != id && alive[i] && !Arrays.asList(friends).contains(i)) {
+            if (i != id && alive[i] && Arrays.asList(enemies).contains(i)) {
                 if (max < shotAt[i]) {
                   max = shotAt[i];
                   target = i;
