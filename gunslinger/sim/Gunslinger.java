@@ -603,7 +603,10 @@ public class Gunslinger
         boolean killed = false;            
         // bullets each player got
         int[] bullets = new int[nplayers];
-            
+
+        // create a new array
+        current = new int[nplayers];
+
         // reset shoots
         for (int i = 0; i != nplayers; ++i)
             current[i] = -1;
