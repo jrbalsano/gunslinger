@@ -10,7 +10,7 @@ public class Player extends gunslinger.sim.Player
     // my version no
     private int version = versions++;
     
-    private static String PLAYER_NAME="G4PlayerV1";
+    private static String PLAYER_NAME="g4";
     
     final int seed = 123456;
     private Random gen;
