@@ -12,11 +12,10 @@ public class GameHistory {
 	private int mNPlayers;
 	private ArrayList<int[]> mShotHistory;
 	private ArrayList<boolean[]> mAliveHistory;
-	private Set<Integer> mFriends;
-	private Set<Integer> mEnemies;
-	private Set<Integer> mThreats; // Neutral players who have shot at us
 	private int mCurrentScore;
 	private LinkedList<RoundListener> mRoundListeners;
+	public enum PlayerType {NEUTRAL, FRIEND, THREAT, ENEMY, SELF};
+	private PlayerType[] mPlayerTypes;
 	
 	/**
 	 * Creates a new game history object for the current player
@@ -26,19 +25,22 @@ public class GameHistory {
 		mId = currentPlayerId;
 		mRoundsCount = 0;
 		mNPlayers = nPlayers;
-		// Initialize friends and enemies list as well as threats
-		mFriends = new HashSet<Integer>();
-		mEnemies = new HashSet<Integer>();
-		mThreats = new HashSet<Integer>();
-		for (Integer i : friends) {
-			mFriends.add(i);
+		// Initialize player types list
+		int friendsCount = 0;
+		mPlayerTypes = new PlayerType[nPlayers];
+		
+		Arrays.fill(mPlayerTypes, PlayerType.NEUTRAL);
+		mPlayerTypes[mId] = PlayerType.SELF;
+		for (int player : friends) {
+			mPlayerTypes[player] = PlayerType.FRIEND;
+			friendsCount++;
 		}
-		for (Integer i : enemies) {
-			mEnemies.add(i);
+		for (int player : enemies) {
+			mPlayerTypes[player] = PlayerType.ENEMY;
 		}
 		
 		// Initialize score
-		mCurrentScore = 1 + mFriends.size();
+		mCurrentScore = 1 + friendsCount;
 		
 		mRoundListeners = new LinkedList<RoundListener>();
 	}
@@ -51,13 +53,11 @@ public class GameHistory {
 			
 			// Calculate score in this round
 			mCurrentScore = alive[mId] ? 1 : 0;
-			for (Integer i : mFriends) {
-				if (alive[i]) {
+			for (int player = 0; player < mNPlayers; player++) {
+				if (alive[player] && mPlayerTypes[player] == PlayerType.FRIEND) {
 					mCurrentScore++;
 				}
-			}
-			for (Integer i : mEnemies) {
-				if (!alive[i]) {
+				else if (!alive[player] && mPlayerTypes[player] == PlayerType.ENEMY) {
 					mCurrentScore++;
 				}
 			}
@@ -66,8 +66,8 @@ public class GameHistory {
 			 * enemy list we are likely on 
 			 */
 			for (int i : prevRound) {
-				if (prevRound[i] == mId) {
-					mThreats.add(i);
+				if (prevRound[i] == mId && mPlayerTypes[i] == PlayerType.NEUTRAL) {
+					mPlayerTypes[i] = PlayerType.THREAT;
 				}
 			}
 			
@@ -131,8 +131,8 @@ public class GameHistory {
 		}
 	}
 	
-	public boolean isThreat(int player) {
-		return mThreats.contains(player);
+	public PlayerType getPlayerType(int player) {
+		return mPlayerTypes[player];
 	}
 	
 	private void notifyRoundListeners() {
