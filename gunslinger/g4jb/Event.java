@@ -14,25 +14,25 @@ public class Event implements Comparable<Event> {
 	private PlayerType mShotType;
 	
 	//Weights
-//	private static int FRIEND_SHOOTS_FRIEND;
-//	private static int FRIEND_SHOOTS_NEUTRAL;
-	private static int FRIEND_SHOOTS_THREAT = 2;
-	private static int FRIEND_SHOOTS_ENEMY = 1;
-//	private static int FRIEND_SHOOTS_ME;
-	private static int NEUTRAL_SHOOTS_FRIEND = 4;
-	private static int NEUTRAL_SHOOTS_NEUTRAL = 3;
-	private static int NEUTRAL_SHOOTS_THREAT = 2;
-	private static int NEUTRAL_SHOOTS_ENEMY = 1;
-	private static int THREAT_SHOOTS_ME = 7;
-//	private static int THREAT_SHOOTS_FRIEND;
-//	private static int THREAT_SHOOTS_NEUTRAL;
-//	private static int THREAT_SHOOTS_THREAT;
-//	private static int THREAT_SHOOTS_ENEMY;
-	private static int ENEMY_SHOOTS_FRIEND = 6;
-	private static int ENEMY_SHOOTS_NEUTRAL = 5;
-	private static int ENEMY_SHOOTS_THREAT = 5;
-	private static int ENEMY_SHOOTS_ENEMY = 5;
-	private static int ENEMY_SHOOTS_ME = 8;
+//	private static final int FRIEND_SHOOTS_FRIEND;
+//	private static final int FRIEND_SHOOTS_NEUTRAL;
+	private static final int FRIEND_SHOOTS_THREAT = 2;
+	private static final int FRIEND_SHOOTS_ENEMY = 1;
+//	private static final int FRIEND_SHOOTS_ME;
+	private static final int NEUTRAL_SHOOTS_FRIEND = 4;
+	private static final int NEUTRAL_SHOOTS_NEUTRAL = 3;
+	private static final int NEUTRAL_SHOOTS_THREAT = 2;
+	private static final int NEUTRAL_SHOOTS_ENEMY = 1;
+	private static final int THREAT_SHOOTS_ME = 7;
+	private static final int THREAT_SHOOTS_FRIEND = 6;
+	private static final int THREAT_SHOOTS_NEUTRAL = 5;
+	private static final int THREAT_SHOOTS_THREAT = 5;
+	private static final int THREAT_SHOOTS_ENEMY = 5;
+	private static final int ENEMY_SHOOTS_FRIEND = 6;
+	private static final int ENEMY_SHOOTS_NEUTRAL = 5;
+	private static final int ENEMY_SHOOTS_THREAT = 5;
+	private static final int ENEMY_SHOOTS_ENEMY = 5;
+	private static final int ENEMY_SHOOTS_ME = 8;
 	
 	// Exponential backoff rate
 	private static double MULTIPLIER = .8;
@@ -82,6 +82,7 @@ public class Event implements Comparable<Event> {
 	}
 	
 	private void resetDangerLevel() {
+		mDangerLevel = 0;
 		switch (mShooterType) {
 		case FRIEND:
 			switch (mShotType) {
@@ -101,6 +102,29 @@ public class Event implements Comparable<Event> {
 			}
 			break;
 		case THREAT:
+			switch (mShotType) {
+			case FRIEND:
+				mDangerLevel = THREAT_SHOOTS_FRIEND;
+				mTarget = mShooterId;
+				break;
+			case NEUTRAL:
+				mDangerLevel = THREAT_SHOOTS_NEUTRAL;
+				mTarget = mShooterId;
+				break;
+			case THREAT:
+				mDangerLevel = THREAT_SHOOTS_THREAT;
+				mTarget = mShotId;
+				break;
+			case ENEMY:
+				mDangerLevel = THREAT_SHOOTS_ENEMY;
+				mTarget = mShotId;
+				break;
+			case SELF:
+				mDangerLevel = THREAT_SHOOTS_ME;
+				mTarget = mShooterId;
+				break;
+			}
+			break;
 		case NEUTRAL:
 			switch (mShotType) {
 			case FRIEND:

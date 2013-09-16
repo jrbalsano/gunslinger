@@ -10,6 +10,8 @@ public class GameHistory {
 	private int mId;
 	private int mRoundsCount;
 	private int mNPlayers;
+	private int mFriendCount; // Number of friends total
+	private int mEnemyCount; // Number of enemies total
 	private ArrayList<int[]> mShotHistory;
 	private ArrayList<boolean[]> mAliveHistory;
 	private int mCurrentScore;
@@ -26,21 +28,23 @@ public class GameHistory {
 		mRoundsCount = 0;
 		mNPlayers = nPlayers;
 		// Initialize player types list
-		int friendsCount = 0;
+		mFriendCount = 0;
+		mEnemyCount = 0;
 		mPlayerTypes = new PlayerType[nPlayers];
 		
 		Arrays.fill(mPlayerTypes, PlayerType.NEUTRAL);
 		mPlayerTypes[mId] = PlayerType.SELF;
 		for (int player : friends) {
 			mPlayerTypes[player] = PlayerType.FRIEND;
-			friendsCount++;
+			mFriendCount++;
 		}
 		for (int player : enemies) {
 			mPlayerTypes[player] = PlayerType.ENEMY;
+			mEnemyCount++;
 		}
 		
 		// Initialize score
-		mCurrentScore = 1 + friendsCount;
+		mCurrentScore = 1 + mFriendsCount;
 		
 		mRoundListeners = new LinkedList<RoundListener>();
 	}
@@ -133,6 +137,14 @@ public class GameHistory {
 	
 	public PlayerType getPlayerType(int player) {
 		return mPlayerTypes[player];
+	}
+	
+	public int getFriendCount() {
+		return mFriendCount;
+	}
+	
+	public int getEnemyCount() {
+		return mEnemyCount;
 	}
 	
 	private void notifyRoundListeners() {
