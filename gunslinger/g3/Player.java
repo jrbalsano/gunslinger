@@ -1,97 +1,189 @@
 package gunslinger.g3;
-
 import java.util.*;
+import java.io.*;
 
-// The base class of a player
-// Extends the base class to start your player
-// See dumb/Player.java for an example
-//
 public class Player extends gunslinger.sim.Player
 {
+    private int nplayers, nfriends, nenemies, nneutrals;
+    private int[] friends, enemies, neutrals, allegiance;
+	private int roundNum = -1, oldRounds = 3;
+    private int[][] history, shooter;
 
-    private int nplayers;
-    private int[] friends;
-    private int[] enemies;
-    
-    // total versions of the same player
+	boolean createLog;
+	private PrintWriter outfile;
+
     private static int versions = 0;
-    // my version no
     private int version = versions++;
-    
-    // name of the team
-    //
-    public String name()
-    {
-        return "g3" + (versions > 1 ? " v" + version : "");
-    }
-    
-    // Initialize the player
-    //
+    public String name() { return "g3"; }
+
     public void init(int nplayers, int[] friends, int enemies[])
     {
-        this.nplayers = nplayers;
+		createLog = false;
+
+		this.nplayers = nplayers;
         this.friends = friends.clone();
-        this.enemies = enemies.clone();  	
-    }
+        this.enemies = enemies.clone();
+		nfriends = friends.length;
+		nenemies = enemies.length;
+		nneutrals = nplayers - nfriends - nenemies;
 
-    // Pick a target to shoot
-    // Parameters:
-    //  prevRound - an array of previous shoots, prevRound[i] is the player that player i shot
-    //              -1 if player i did not shoot
-    //  alive - an array of player's status, true if the player is still alive in this round
-    // Return:
-    //  int - the player id to shoot, return -1 if do not shoot anyone
-    //
-    public int shoot(int[] prevRound, boolean[] alive){
-    	    	
-    	if (prevRound == null)
-    	{
-    		//First Round Strategy -> wait do nothing
-    		System.err.println("[ME] First Round, I am " + id + " waiting...");
-    	}
-    	else
-    	{
-    		//Priority 1: Shoot person you shot at before if they are not dead
-    		int lastPersonShotAt = prevRound[id];
-	    		
-	    	if( lastPersonShotAt != -1 && alive[lastPersonShotAt] )
-	    	{
-	    		return lastPersonShotAt;
-	    	}
+		allegiance = new int[nplayers];
+		for(int i = 0; i < nfriends; i++)
+			allegiance[friends[i]] = 1;
+		for(int i = 0; i < nenemies; i++)
+			allegiance[enemies[i]] = -1;
+		allegiance[id] = 2;
 
-	    	//Priority 2: Shoot the person who shot you last round
-	    	for(int i = 0;i < prevRound.length; i++)
-	    	{
-	    		if( (prevRound[i] == id) && alive[i] )
-	    		{
-	    			return i;
-	    		}
-	       	}
-    		
-			//Priority 3: Shoot at enemies that shot at friends
-			for(int i = 0;i < prevRound.length; i++)
+		history = new int[100][nplayers];
+		for (int i = 0; i < history.length; i++)
+			for (int j = 0; j < nplayers; j++)
+				history[i][j] = -1;
+
+		shooter = new int[oldRounds][nplayers];
+
+		if(createLog) try {
+			FileWriter fstream = new FileWriter("gunslinger/g3/log.txt");
+			outfile = new PrintWriter(fstream);
+			outfile.println("Init:");
+			outfile.println(Integer.toString(id));
+			outfile.println(Arrays.toString(allegiance));
+			outfile.flush();
+		} catch (Exception e){ }
+	}
+
+	private final double ACTION_THRESHOLD      = +0.7;
+	private final double ELIMINATION_THRESHOLD = +1.4;
+
+    public int shoot(int[] prevRound, boolean[] alive)
+    {
+		roundNum++;
+
+		if(createLog) try {
+			outfile.println("\nRound " + Integer.toString(roundNum) + ":");
+			outfile.println(Arrays.toString(prevRound));
+			outfile.println(Arrays.toString(alive));
+			outfile.flush();
+		} catch (Exception e){ }
+
+		if(prevRound == null)
+			return -1;
+
+		updateHistory(prevRound);
+		double[] expectedShots = getExpectedShots(alive);
+
+		if(createLog) try {
+			outfile.println(Arrays.toString(shooter[0]));
+			outfile.println(Arrays.toString(expectedShots));
+			outfile.flush();
+		} catch (Exception e){ }
+
+		if(shooter[0][id] != -1 && alive[shooter[0][id]] && expectedShots[id] < ELIMINATION_THRESHOLD && allegiance[shooter[0][id]] != 1)
+			return shooter[0][id];
+
+		int friendId = -1;
+		for(int k = 0, i = -1; k < nfriends; k++)
+		{
+			i = friends[k];
+			if(alive[i] && shooter[0][i] != -1 && alive[shooter[0][i]] && expectedShots[shooter[0][i]] >= ACTION_THRESHOLD && expectedShots[i] < ELIMINATION_THRESHOLD)
 			{
-				for(int j = 0;j < friends.length; j++)
+				if(friendId == -1)
+					friendId = i;
+				else if(expectedShots[shooter[0][i]] < ELIMINATION_THRESHOLD)
 				{
-					// Did the player shoot a friend?
-					if ( (friends[j] == prevRound[i]) && alive[i])
-					{
-						// Is the player an enemy
-						for(int k = 0;k < enemies.length; k++)
-						{
-							if (enemies[k] == i)
-							{
-								return i;
-							}
-							//else keep a low profile by not killing neutral players
-						}
-					}
+					if(shooter[0][shooter[0][i]] == id)
+						return shooter[0][i];
+					else if(allegiance[shooter[0][i]] < allegiance[shooter[0][friendId]])
+						friendId = i;
+					else if(allegiance[shooter[0][i]] == allegiance[shooter[0][friendId]] && expectedShots[shooter[0][i]] > expectedShots[shooter[0][friendId]])
+						friendId = i;
 				}
-			}		
-    	}
-    	    	
-    	return -1;
-    	
-    }
-    
+			}
+		}
+		if(friendId != -1)
+			return shooter[0][friendId];
+
+		int enemyId = -1;
+		for(int k = 0, i = -1; k < nenemies; k++)
+		{
+			i = enemies[k];
+			if(alive[i] && expectedShots[i] >= ACTION_THRESHOLD)
+			{
+				if(enemyId == -1)
+					enemyId = i;
+				else if(expectedShots[i] < ELIMINATION_THRESHOLD)
+				{
+					if(shooter[0][enemyId] == -1 && (shooter[0][i] != -1 || expectedShots[i] > expectedShots[enemyId]))
+						enemyId = i;
+					else if(shooter[0][i] != -1 && allegiance[shooter[0][i]] > allegiance[shooter[0][enemyId]])
+						enemyId = i;
+					else if(allegiance[shooter[0][i]] == allegiance[shooter[0][enemyId]] && expectedShots[i] > expectedShots[enemyId])
+						enemyId = i;
+				}
+			}
+		}
+		if(enemyId != -1)
+			return enemyId;
+
+		return -1;
+	}
+
+	private void updateHistory(int[] prevRound)
+	{
+		int prevRoundNum = roundNum - 1;
+		for (int i = 0; i < nplayers; i++)
+			history[prevRoundNum][i] = prevRound[i];
+		if(roundNum == 100)
+		{
+			for(int r = 50; r < 100; r++)
+				for (int i = 0; i < nplayers; i++)
+					history[r - 50][i] = history[r][i];
+			roundNum = roundNum - 50;
+		}
+	}
+
+	private final double REPEAT_FACTOR       = +1.0;
+	private final double DEFENSE_FACTOR      = -0.7;
+	private final double RETALIATION_FACTOR  = +1.0;
+	private final double INERTIA_FACTOR      = -0.3;
+	private double[] getExpectedShots(boolean[] alive)
+	{
+		double[] expectedShots = new double[nplayers];
+
+		for(int r = 0; r < oldRounds; r++)
+			for(int i = 0; i < nplayers; i++)
+					shooter[r][i] = -1;
+
+		for(int r = 0; r < oldRounds; r++)
+			for(int i = 0; i < nplayers; i++)
+					if((roundNum - r) > 0 && history[roundNum -r -1][i] != -1 && alive[history[roundNum -r -1][i]])
+						shooter[r][history[roundNum -r -1][i]] = i;
+
+		int playersShot = 0, playersAlive = 0;
+		for(int i = 0; i < nplayers; i++)
+			if(alive[i])
+			{
+				playersAlive++;
+				if(shooter[0][i] != -1)
+					playersShot++;
+			}
+
+		for(int i = 0; i < nplayers; i++)
+			if(alive[i])
+			{
+				if(shooter[0][i] != -1 && shooter[0][i] != id)
+				{
+					expectedShots[i] = expectedShots[i] + REPEAT_FACTOR;
+					if(shooter[0][shooter[0][i]] != -1)
+						expectedShots[i] = expectedShots[i] + DEFENSE_FACTOR;
+				}
+				if(history[roundNum -1][i] != -1 && history[roundNum -1][i] != id && alive[history[roundNum -1][i]])
+				{
+					expectedShots[i] = expectedShots[i] + RETALIATION_FACTOR;
+					int target = history[roundNum -1][i];
+					if(history[roundNum -1][target] != -1 && alive[history[roundNum -1][target]])
+						expectedShots[i] = expectedShots[i] + INERTIA_FACTOR;
+				}
+			}
+		return expectedShots;
+	}
 }

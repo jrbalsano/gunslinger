@@ -1,5 +1,6 @@
 package gunslinger.g4jb;
 
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 public class EventManager implements RoundListener {
@@ -11,9 +12,14 @@ public class EventManager implements RoundListener {
 	
 	@Override
 	public void onNewRound(GameHistory history) {
+		LinkedList<Event> toRemove = new LinkedList<Event>();
 		for (Event event : mEvents) {
 			event.onRoundPassed(history);
+			if (event.getDangerScore() == 0)
+				toRemove.add(event);
 		}
+
+		mEvents.removeAll(toRemove);
 		
 		for (int shooter = 0; shooter < history.getNPlayers(); shooter++) {
 			int shotAt = history.playerShotAt(shooter);
@@ -25,7 +31,7 @@ public class EventManager implements RoundListener {
 
 	public int getBestShot() {
 		if (mEvents.size() > 0) {
-			return mEvents.poll().getTarget();
+			return mEvents.peek().getTarget();
 		}
 		else {
 			return -1;

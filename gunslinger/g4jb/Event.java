@@ -52,6 +52,10 @@ public class Event implements Comparable<Event> {
 	}
 	
 	public void onRoundPassed(GameHistory history) {
+		if (!history.isAlive(mShotId) || !history.isAlive(mShooterId)) {
+			mDangerLevel = 0;
+			return;
+		}
 		boolean dangerLevelChanged = false;
 		if (mShotType == PlayerType.NEUTRAL) {
 			mShotType = history.getPlayerType(mShotId);
@@ -60,7 +64,7 @@ public class Event implements Comparable<Event> {
 		if (mShooterType == PlayerType.NEUTRAL) {
 			mShooterType = history.getPlayerType(mShotId);
 			dangerLevelChanged = true;
-		}
+		} 
 		if (dangerLevelChanged) {
 			resetDangerLevel();
 		}
