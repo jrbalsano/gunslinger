@@ -44,7 +44,7 @@ public class GameHistory {
 		}
 		
 		// Initialize score
-		mCurrentScore = 1 + mFriendsCount;
+		mCurrentScore = 1 + mFriendCount;
 		
 		mRoundListeners = new LinkedList<RoundListener>();
 	}
