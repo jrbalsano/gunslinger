@@ -25,6 +25,8 @@ public class GameHistory {
 	 */
 	public GameHistory(int currentPlayerId, int nPlayers, int[] friends, int[] enemies) {
 		mId = currentPlayerId;
+		mShotHistory = new ArrayList<int[]>();
+		mAliveHistory = new ArrayList<boolean[]>();
 		mRoundsCount = 0;
 		mNPlayers = nPlayers;
 		// Initialize player types list
@@ -69,7 +71,7 @@ public class GameHistory {
 			/* Check for new threats - those players who shot at us and whose
 			 * enemy list we are likely on 
 			 */
-			for (int i : prevRound) {
+			for (int i = 0; i < mNPlayers; i++) {
 				if (prevRound[i] == mId && mPlayerTypes[i] == PlayerType.NEUTRAL) {
 					mPlayerTypes[i] = PlayerType.THREAT;
 				}
@@ -128,7 +130,12 @@ public class GameHistory {
 			throw new IllegalArgumentException();
 		}
 		else if (round == 0) {
-			return mAliveHistory.get(mRoundsCount - 1)[player];
+			if (mAliveHistory.size() > 0) {
+				return mAliveHistory.get(mAliveHistory.size() - 1)[player];
+			}
+			else {
+				return true;
+			}
 		}
 		else {
 			return mAliveHistory.get(round)[player];

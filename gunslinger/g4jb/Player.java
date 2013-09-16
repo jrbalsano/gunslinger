@@ -49,7 +49,13 @@ public class Player extends gunslinger.sim.Player
 	{
 		mHistory.addRound(prevRound, alive);
 		int target = mManager.getBestShot();
-		return target;
+		while (target >= 0) {
+			if (mHistory.isAlive(target)) {
+				return target;
+			}
+			target = mManager.getBestShot();
+		}
+		return -1;
 	}
 
 

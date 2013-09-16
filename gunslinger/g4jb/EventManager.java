@@ -17,13 +17,18 @@ public class EventManager implements RoundListener {
 		
 		for (int shooter = 0; shooter < history.getNPlayers(); shooter++) {
 			int shotAt = history.playerShotAt(shooter);
-			if (history.isAlive(shooter) && history.isAlive(shotAt)) {
+			if (shotAt != -1 && history.isAlive(shooter) && history.isAlive(shotAt)) {
 				mEvents.add(new Event(history, shooter));
 			}
 		}
 	}
 
 	public int getBestShot() {
-		return mEvents.poll().getTarget();
+		if (mEvents.size() > 0) {
+			return mEvents.poll().getTarget();
+		}
+		else {
+			return -1;
+		}
 	}
 }

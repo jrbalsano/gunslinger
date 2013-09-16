@@ -43,10 +43,12 @@ public class Event implements Comparable<Event> {
 		mShotId = history.playerShotAt(mShooterId);
 		mShooterType = history.getPlayerType(mShooterId); 
 		mShotType = history.getPlayerType(mShotId);
+		
+		System.out.println(mShooterType + " shot at " + mShotType);
 	
+		mTarget = -1;
 		resetDangerLevel();
 		mDangerMultiplier = 1;
-		mTarget = -1;
 	}
 	
 	public void onRoundPassed(GameHistory history) {
@@ -66,7 +68,7 @@ public class Event implements Comparable<Event> {
 	}
 	
 	public int compareTo(Event other) {
-		return (int) Math.signum(getDangerScore() - other.getDangerScore()); 
+		return (int) Math.signum(other.getDangerScore() - getDangerScore()); 
 	}
 	
 	public double getDangerScore() {
