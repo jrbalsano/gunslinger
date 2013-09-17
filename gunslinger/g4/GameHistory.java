@@ -1,4 +1,4 @@
-package gunslinger.g4jl;
+package gunslinger.g4;
 
 import java.util.ArrayList;
 import java.util.Arrays;

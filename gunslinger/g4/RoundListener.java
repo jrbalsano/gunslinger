@@ -1,4 +1,4 @@
-package gunslinger.g4jl;
+package gunslinger.g4;
 
 public interface RoundListener {
 	/**
