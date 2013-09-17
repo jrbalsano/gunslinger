@@ -15,9 +15,6 @@ public class Player extends gunslinger.sim.Player
 	// A simple fixed shoot rate strategy used by the dumb player
 	private static double ShootRate = 0.8;
 
-        // ratio of e+n / e+n+f+1
-        private double ratio;
-
 	private GameHistory mHistory;
 	private EventManager mManager;
 
@@ -36,9 +33,6 @@ public class Player extends gunslinger.sim.Player
 		mManager = new EventManager();
 		mHistory.addRoundListener(mManager);
 		gen = new Random(System.currentTimeMillis());
-                ratio = ((double)mHistory.getEnemyCount() +
-                        (double)mHistory.getNeutralCount()) /
-                        (double)mHistory.getNPlayers();
 	}
 
 	// Pick a target to shoot
@@ -55,24 +49,8 @@ public class Player extends gunslinger.sim.Player
 		mHistory.addRound(prevRound, alive);
 		int target = mManager.getBestShot();
                 
-                if(safetyOff()){        
-                    return target;
-                }else{
-                    return -1;
-                }
+                return target;
 	}
-
-        public boolean safetyOff()
-        {
-                if(mHistory.getAliveCount() > 5)
-                    return true;
-
-                double mRatio = ((double)mHistory.getEnemyCount() + 
-                            (double)mHistory.getNeutralCount()) /
-                            (double)mHistory.getAliveCount();
-                
-                return mRatio <= 3.0/5.0;
-        }
 
 	private Random gen;
 	private int nplayers;
