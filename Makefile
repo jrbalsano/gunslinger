@@ -1,4 +1,4 @@
-main: gunslinger/sim/Gunslinger.class gunslinger/dumb/Player.class gunslinger/g4jb/Player.class gunslinger/G4PlayerV1/Player.class gunslinger/g1/Player.class gunslinger/g2/Player.class gunslinger/g3/Player.class gunslinger/g5/Player.class gunslinger/g6/Player.class gunslinger/g7/Player.class gunslinger/g8/Player.class gunslinger/g9/Player.class
+main: gunslinger/sim/Gunslinger.class gunslinger/dumb/Player.class gunslinger/g4jl/Player.class gunslinger/G4PlayerV1/Player.class gunslinger/g1/Player.class gunslinger/g2/Player.class gunslinger/g3/Player.class gunslinger/g5/Player.class gunslinger/g6/Player.class gunslinger/g7/Player.class gunslinger/g8/Player.class gunslinger/g9/Player.class
 
 gunslinger/sim/Gunslinger.class: gunslinger/sim/Gunslinger.java gunslinger/sim/Player.java
 	javac gunslinger/sim/Gunslinger.java gunslinger/sim/Player.java
@@ -9,8 +9,8 @@ gunslinger/dumb/Player.class: gunslinger/dumb/Player.java gunslinger/sim/Player.
 gunslinger/G4PlayerV1/Player.class: gunslinger/G4PlayerV1/Player.java gunslinger/sim/Player.java
 	javac gunslinger/G4PlayerV1/Player.java gunslinger/sim/Player.java
 
-gunslinger/g4jb/Player.class: gunslinger/g4jb/Player.java gunslinger/sim/Player.java
-	javac gunslinger/g4jb/Player.java gunslinger/sim/Player.java
+gunslinger/g4jl/Player.class: gunslinger/g4jl/Player.java gunslinger/sim/Player.java
+	javac gunslinger/g4jl/Player.java gunslinger/sim/Player.java
 
 gunslinger/g1/Player.class: gunslinger/g1/Player.java gunslinger/g1/AiPlayer.java
 	javac gunslinger/g1/Player.java gunslinger/g1/AiPlayer.java gunslinger/sim/Player.java
@@ -39,3 +39,7 @@ gunslinger/g9/Player.class: gunslinger/g9/Player.java
 .PHONY:
 tour: main
 	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 false false false false 100
+
+.PHONY:
+round: main
+	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 true true
