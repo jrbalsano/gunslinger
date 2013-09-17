@@ -38,4 +38,8 @@ gunslinger/g9/Player.class: gunslinger/g9/Player.java
 
 .PHONY:
 tour: main
-	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 false false false false 100
+	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 false true false false 10000
+
+.PHONY:
+round: main
+	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 true true

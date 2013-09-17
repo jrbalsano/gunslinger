@@ -146,6 +146,15 @@ public class GameHistory {
 		return mPlayerTypes[player];
 	}
 	
+        public int getAliveCount() {
+                int aliveCount = 0;
+                for(int i=0; i<mNPlayers; i++){
+                    if(isAlive(i))
+                        aliveCount++;
+                }
+                return aliveCount;
+        }
+
 	public int getFriendCount() {
 		return mFriendCount;
 	}
@@ -154,6 +163,11 @@ public class GameHistory {
 		return mEnemyCount;
 	}
 	
+        public int getNeutralCount() {
+                return this.getAliveCount()-
+                        this.getFriendCount()-this.getEnemyCount();
+        }
+
 	private void notifyRoundListeners() {
 		for (RoundListener rl : mRoundListeners) {
 			rl.onNewRound(this);

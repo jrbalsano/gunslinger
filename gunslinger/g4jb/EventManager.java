@@ -30,6 +30,8 @@ public class EventManager implements RoundListener {
 	}
 
 	public int getBestShot() {
+                System.out.println(mEvents.size());
+
 		if (mEvents.size() > 0) {
 			return mEvents.peek().getTarget();
 		}
