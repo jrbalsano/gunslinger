@@ -18,7 +18,6 @@ public class GameHistory {
 	private LinkedList<RoundListener> mRoundListeners;
 	public enum PlayerType {NEUTRAL, FRIEND, THREAT, ENEMY, SELF};
 	private PlayerType[] mPlayerTypes;
-    private boolean mWorthKillingNeutral;
 
 	/**
 	 * Creates a new game history object for the current player
@@ -45,7 +44,6 @@ public class GameHistory {
 			mPlayerTypes[player] = PlayerType.ENEMY;
 			mEnemyCount++;
 		}
-		mWorthKillingNeutral = ((mEnemyCount-mFriendCount-1) <= 0);
 		// Initialize score
 		mCurrentScore = 1 + mFriendCount;
 		
@@ -154,10 +152,6 @@ public class GameHistory {
 	public int getEnemyCount() {
 		return mEnemyCount;
 	}
-
-    public boolean getWorthKillingNeutral() {
-        return mWorthKillingNeutral;
-    }
 	
 	private void notifyRoundListeners() {
 		for (RoundListener rl : mRoundListeners) {

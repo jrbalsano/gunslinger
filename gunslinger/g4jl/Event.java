@@ -16,13 +16,13 @@ public class Event implements Comparable<Event> {
 	//Weights
 //	private static final int FRIEND_SHOOTS_FRIEND;
 //	private static final int FRIEND_SHOOTS_NEUTRAL;
-	private static final int FRIEND_SHOOTS_THREAT = 2;
-	private static final int FRIEND_SHOOTS_ENEMY = 1;
+//	private static final int FRIEND_SHOOTS_THREAT = 2;
+//	private static final int FRIEND_SHOOTS_ENEMY = 1;
 //	private static final int FRIEND_SHOOTS_ME;
 	private static final int NEUTRAL_SHOOTS_FRIEND = 4;
 	private static final int NEUTRAL_SHOOTS_NEUTRAL = 3;
-	private static final int NEUTRAL_SHOOTS_THREAT = 2;
-	private static final int NEUTRAL_SHOOTS_ENEMY = 1;
+//	private static final int NEUTRAL_SHOOTS_THREAT = 2;
+//	private static final int NEUTRAL_SHOOTS_ENEMY = 1;
 	private static final int THREAT_SHOOTS_ME = 7;
 	private static final int THREAT_SHOOTS_FRIEND = 6;
 	private static final int THREAT_SHOOTS_NEUTRAL = 5;

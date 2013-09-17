@@ -31,7 +31,7 @@ public class Player extends gunslinger.sim.Player
 		mHistory = new GameHistory(id, nplayers, friends, enemies);
 		mManager = new EventManager();
 		mHistory.addRoundListener(mManager);
-        mLateGame = new LateGameManager();
+        mLateGame = new LateGameManager(mHistory);
 		mHistory.addRoundListener(mLateGame);
         gen = new Random(System.currentTimeMillis());
 

@@ -3,10 +3,12 @@ package gunslinger.g4jl;
 public class LateGameManager implements RoundListener {
     private int mTarget;
     private boolean mIsLateGame;
+    private boolean mWorthKillingNeutral;
 	
-	public LateGameManager() {
+	public LateGameManager(GameHistory history) {
         mTarget = -1;
         mIsLateGame = false;
+        mWorthKillingNeutral = ((history.getEnemyCount()-history.getFriendCount()-1) <= 0);
 	}
 	
 	@Override
@@ -25,7 +27,7 @@ public class LateGameManager implements RoundListener {
                 mTarget = target;
             if ((history.getPlayerType(target) == GameHistory.PlayerType.NEUTRAL ||
                  history.getPlayerType(target) == GameHistory.PlayerType.THREAT) &&
-                history.getWorthKillingNeutral())
+                mWorthKillingNeutral)
                 mTarget = target;
             mIsLateGame = true;
         }
