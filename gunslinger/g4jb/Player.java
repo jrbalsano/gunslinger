@@ -64,12 +64,14 @@ public class Player extends gunslinger.sim.Player
 
         public boolean safetyOff()
         {
+                if(mHistory.getAliveCount() > 5)
+                    return true;
+
                 double mRatio = ((double)mHistory.getEnemyCount() + 
                             (double)mHistory.getNeutralCount()) /
                             (double)mHistory.getAliveCount();
-
-                System.out.println("\t\tmRatio:::ratio  "+mRatio+":::"+ratio);
-                return mRatio <= ratio;
+                
+                return mRatio <= 3.0/5.0;
         }
 
 	private Random gen;
