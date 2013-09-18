@@ -7,7 +7,7 @@ gunslinger/dumb/Player.class: gunslinger/dumb/Player.java gunslinger/sim/Player.
 	javac gunslinger/dumb/Player.java gunslinger/sim/Player.java
 
 gunslinger/g4/Player.class: gunslinger/g4/*.java gunslinger/sim/Player.java
-	javac gunslinger/g4/Player.java gsunlinger/g4/*.java
+	javac gunslinger/g4/Player.java gunslinger/g4/*.java
 
 .PHONY:
 tour: main
