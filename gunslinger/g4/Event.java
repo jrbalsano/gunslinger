@@ -16,26 +16,26 @@ public class Event implements Comparable<Event> {
 	//Weights
 //	private static final int FRIEND_SHOOTS_FRIEND;
 //	private static final int FRIEND_SHOOTS_NEUTRAL;
-//	private static final int FRIEND_SHOOTS_THREAT = 2;
-//	private static final int FRIEND_SHOOTS_ENEMY = 1;
+//	private static final int FRIEND_SHOOTS_THREAT = 4;
+//	private static final int FRIEND_SHOOTS_ENEMY = 2;
 //	private static final int FRIEND_SHOOTS_ME;
-	private static final int NEUTRAL_SHOOTS_FRIEND = 4;
-	private static final int NEUTRAL_SHOOTS_NEUTRAL = 3;
-//	private static final int NEUTRAL_SHOOTS_THREAT = 2;
-//	private static final int NEUTRAL_SHOOTS_ENEMY = 1;
-	private static final int THREAT_SHOOTS_ME = 7;
-	private static final int THREAT_SHOOTS_FRIEND = 6;
-	private static final int THREAT_SHOOTS_NEUTRAL = 5;
-	private static final int THREAT_SHOOTS_THREAT = 5;
-	private static final int THREAT_SHOOTS_ENEMY = 5;
-	private static final int ENEMY_SHOOTS_FRIEND = 6;
-	private static final int ENEMY_SHOOTS_NEUTRAL = 5;
-	private static final int ENEMY_SHOOTS_THREAT = 5;
-	private static final int ENEMY_SHOOTS_ENEMY = 5;
-	private static final int ENEMY_SHOOTS_ME = 8;
+	private static final int NEUTRAL_SHOOTS_FRIEND = 17;
+	private static final int NEUTRAL_SHOOTS_NEUTRAL = 6;
+//	private static final int NEUTRAL_SHOOTS_THREAT = 4;
+//	private static final int NEUTRAL_SHOOTS_ENEMY = 2;
+	private static final int THREAT_SHOOTS_ME = 16;
+	private static final int THREAT_SHOOTS_FRIEND = 19;
+	private static final int THREAT_SHOOTS_NEUTRAL = 14;
+	private static final int THREAT_SHOOTS_THREAT = 14;
+	private static final int THREAT_SHOOTS_ENEMY = 14;
+	private static final int ENEMY_SHOOTS_FRIEND = 20;
+	private static final int ENEMY_SHOOTS_NEUTRAL = 15;
+	private static final int ENEMY_SHOOTS_THREAT = 15;
+	private static final int ENEMY_SHOOTS_ENEMY = 15;
+	private static final int ENEMY_SHOOTS_ME = 18;
 	
 	// Exponential backoff rate
-	private static double MULTIPLIER = .8;
+	private static double MULTIPLIER = .55;
 	
 	
 	public Event(GameHistory history, int shooter) {
