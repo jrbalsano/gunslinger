@@ -5,6 +5,7 @@ import gunslinger.g4.GameHistory.PlayerType;
 public class Event implements Comparable<Event> {
 	// The threat level that this event poses. Higher numbers denote greater
 	// threat.
+    private GameHistory mHistory;
 	private double mDangerLevel;
 	private double mDangerMultiplier;
 	private int mShooterId;
@@ -24,6 +25,8 @@ public class Event implements Comparable<Event> {
 	                           {-1,		-1,		-1,		-1,		-1}}};
 	 */
 	
+    private boolean mToDelete;
+
 	//Weights
 	private int[][] weights = {{0, 		0, 		0, 		0,	 	0},
 	                           {17, 	6, 		-1, 	-1, 	-1},
@@ -40,33 +43,24 @@ public class Event implements Comparable<Event> {
 		mShotId = history.playerShotAt(mShooterId);
 		mShooterType = history.getPlayerType(mShooterId); 
 		mShotType = history.getPlayerType(mShotId);
-		
+		mHistory = history;
 		System.out.println(mShooterType + " shot at " + mShotType);
+        mToDelete = false;
 	
 		resetDangerLevel();
 		if (mDangerLevel == -1) {
-			mTarget = -1;
+			mToDelete = true;
 		}
 		mDangerMultiplier = 1;
 	}
 	
 	public void onRoundPassed(GameHistory history) {
 		if (!history.isAlive(mShotId) || !history.isAlive(mShooterId)) {
-			mDangerLevel = 0;
+			mToDelete = true;
 			return;
 		}
-		boolean dangerLevelChanged = false;
-		if (mShotType == PlayerType.NEUTRAL) {
-			mShotType = history.getPlayerType(mShotId);
-			dangerLevelChanged = true;
-		}
-		if (mShooterType == PlayerType.NEUTRAL) {
-			mShooterType = history.getPlayerType(mShotId);
-			dangerLevelChanged = true;
-		} 
-		if (dangerLevelChanged) {
-			resetDangerLevel();
-		}
+        resetDangerLevel();
+        adjustForTarget();
 		adjustBackoffMultiplier();
 	}
 	
@@ -77,6 +71,10 @@ public class Event implements Comparable<Event> {
 	public double getDangerScore() {
 		return mDangerLevel * mDangerMultiplier;
 	}
+    
+    public boolean getToDelete() {
+        return mToDelete;
+    }
 	
 	public int getTarget() {
 		return mTarget;
@@ -90,4 +88,8 @@ public class Event implements Comparable<Event> {
 		mDangerLevel = weights[mShooterType.ordinal()][mShotType.ordinal()];
 		mTarget = mShooterId;
 	}
+
+    private void adjustForTarget() {
+        mDangerLevel += mHistory.getRetaliateRate(mShotId);
+    }
 }
