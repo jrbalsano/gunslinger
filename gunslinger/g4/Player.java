@@ -16,7 +16,7 @@ public class Player extends gunslinger.sim.Player
 	private GameHistory mHistory;
 	private EventManager mManager;
 	private LateGameManager mLateGame;
-
+	private PanicModeManager mPanicMode;
 	// name of the team
 	//
 	public String name()
@@ -31,9 +31,11 @@ public class Player extends gunslinger.sim.Player
 		mHistory = new GameHistory(id, nplayers, friends, enemies);
 		mManager = new EventManager();
 		mHistory.addRoundListener(mManager);
-        mLateGame = new LateGameManager(mHistory);
+	        mLateGame = new LateGameManager(mHistory);
 		mHistory.addRoundListener(mLateGame);
-        gen = new Random(System.currentTimeMillis());
+		mPanicMode = new PanicModeManager(mHistory);
+		mHistory.addRoundListener(mPanicMode);
+	        gen = new Random(System.currentTimeMillis());
 
 	}
 
@@ -48,9 +50,12 @@ public class Player extends gunslinger.sim.Player
 	//
 	public int shoot(int[] prevRound, boolean[] alive)
 	{
+	
 		mHistory.addRound(prevRound, alive);
-        if (mLateGame.isLateGame())
-            return mLateGame.shoot();
+       		if (mPanicMode.isPanicMode())
+			return mPanicMode.shoot();
+		if (mLateGame.isLateGame())
+            		return mLateGame.shoot();
 		int target = mManager.getBestShot();
 		return target;
 	}

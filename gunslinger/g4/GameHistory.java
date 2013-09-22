@@ -144,6 +144,10 @@ public class GameHistory {
 	public PlayerType getPlayerType(int player) {
 		return mPlayerTypes[player];
 	}
+
+	public int getRoundsCount(){
+		return mRoundsCount;
+	}
 	
 	public int getFriendCount() {
 		return mFriendCount;
