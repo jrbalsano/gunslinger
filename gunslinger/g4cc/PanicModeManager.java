@@ -11,6 +11,8 @@ public class PanicModeManager implements RoundListener {
     public PanicModeManager(GameHistory history) {
         mTarget = -1;
         mIsPanicMode = false;
+	mEnemies = new LinkedList<Integer>();
+	enemies = new LinkedList<Integer>();
     }
 	
     @Override
@@ -26,7 +28,7 @@ public class PanicModeManager implements RoundListener {
 
         //threat retaliation failed (?) just threat case or help friend case
 
-        if(history.getRoundsCount() > 1){
+        if(history.getRoundsCount() > 1 && history.playerShotAt(self, 0) >=0){
             if(history.isAlive(history.playerShotAt(self, 0)))
                 mIsPanicMode = true;
         }
@@ -57,7 +59,8 @@ public class PanicModeManager implements RoundListener {
         if(history.getRoundsCount() > 1){
             if(history.getFriendCount() > 0){
                 for(int i=0; i<history.getNPlayers(); i++){
-                    if(history.getPlayerType(i) == GameHistory.PlayerType.NEUTRAL){
+                    if(history.getPlayerType(i) == GameHistory.PlayerType.NEUTRAL
+			&& history.playerShotAt(i) >=0){
                         if(history.getPlayerType(history.playerShotAt(i)) 
                                                     == GameHistory.PlayerType.FRIEND){
                             mTarget = i;
@@ -65,7 +68,8 @@ public class PanicModeManager implements RoundListener {
                     }
                 }
                 for(int i=0; i<history.getNPlayers(); i++){
-                    if(history.getPlayerType(i) == GameHistory.PlayerType.THREAT){
+                    if(history.getPlayerType(i) == GameHistory.PlayerType.THREAT
+			&& history.playerShotAt(i) >=0){
                         if(history.getPlayerType(history.playerShotAt(i)) 
                                                     == GameHistory.PlayerType.FRIEND){
                             mTarget = i;
@@ -73,7 +77,8 @@ public class PanicModeManager implements RoundListener {
                     }
                 }
                 for(int i=0; i<history.getNPlayers(); i++){
-                    if(history.getPlayerType(i) == GameHistory.PlayerType.ENEMY){
+                    if(history.getPlayerType(i) == GameHistory.PlayerType.ENEMY
+			&& history.playerShotAt(i) >=0){
                         if(history.getPlayerType(history.playerShotAt(i)) 
                                                     == GameHistory.PlayerType.FRIEND){
                             mTarget = i;
