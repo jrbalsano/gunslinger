@@ -2,9 +2,7 @@ package gunslinger.g4;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 public class GameHistory {
 	private int mId;
@@ -16,7 +14,7 @@ public class GameHistory {
 	private ArrayList<boolean[]> mAliveHistory;
 	private int mCurrentScore;
 	private LinkedList<RoundListener> mRoundListeners;
-	public enum PlayerType {NEUTRAL, FRIEND, THREAT, ENEMY, SELF};
+	public enum PlayerType {FRIEND, NEUTRAL, THREAT, ENEMY, SELF};
 	private PlayerType[] mPlayerTypes;
 
 	/**
