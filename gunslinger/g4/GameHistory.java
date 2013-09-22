@@ -176,6 +176,9 @@ public class GameHistory {
 	}
 
     public double getRetaliateRate(int player) {
+        if (mMaxRetaliate[player] == 0) {
+            return 1;
+        }
         return (double)mNRetaliate[player]/mMaxRetaliate[player];
     }
 	

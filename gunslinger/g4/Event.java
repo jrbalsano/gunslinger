@@ -165,6 +165,7 @@ public class Event implements Comparable<Event> {
 			}
 			break;
 		default:
+            mToDelete = true;
 			break;
 		}
 	}
