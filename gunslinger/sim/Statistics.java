@@ -200,6 +200,8 @@ public class Statistics
         bigStatsWriter.println("e, f, group, score, freq, n, avgDeadEnemies, avgAliveFriends, avgAlive");
         PrintWriter littleStatsWriter = new PrintWriter("stats.csv", "UTF-8");
         littleStatsWriter.println("e, f, n, group, avg. score, avg alive friends, avg dead enemies, average alive");
+        littleStatsWriter.flush();
+        bigStatsWriter.flush();
         for (nfriends = 0; nfriends < nplayers; nfriends++) {
         	for (nenemies = 0; nenemies + nfriends < nplayers; nenemies++) {
         		// additional constraint
@@ -288,6 +290,8 @@ public class Statistics
                 	avgAlive /= games;
                 	littleStatsWriter.printf("%d, %d, %d, %s, %f, %f, %f, %f\n", nenemies, nfriends, nplayers, playerNames[team], avgScore, avgAliveFriends, avgDeadEnemies, avgAlive);
                 }
+                littleStatsWriter.flush();
+                bigStatsWriter.flush();
         	}
         }
         bigStatsWriter.close();
