@@ -25,8 +25,11 @@ public class PanicModeManager implements RoundListener {
         }
 
         //threat retaliation failed (?) just threat case or help friend case
-        if(history.isAlive(history.playerShotAt(self, 0)))
-            mIsPanicMode = true;
+
+        if(history.getRoundsCount() > 1){
+            if(history.isAlive(history.playerShotAt(self, 0)))
+                mIsPanicMode = true;
+        }
        
         //2 threats alive
         int numThreats = 0;
@@ -43,34 +46,38 @@ public class PanicModeManager implements RoundListener {
             mIsPanicMode = true;
         
         //preserve self
-        for(int i=0; i<history.getNPlayers(); i++){
-            if(history.playerShotAt(i) == self) 
-                    mTarget = i;
-        }
-        
-        //preserve friends
-        if(history.getFriendCount() > 0){
+        if(history.getRoundsCount() > 1){
             for(int i=0; i<history.getNPlayers(); i++){
-                if(history.getPlayerType(i) == GameHistory.PlayerType.NEUTRAL){
-                    if(history.getPlayerType(history.playerShotAt(i)) 
-                                                == GameHistory.PlayerType.FRIEND){
+                if(history.playerShotAt(i) == self) 
                         mTarget = i;
+            }
+        }
+            
+        //preserve friends
+        if(history.getRoundsCount() > 1){
+            if(history.getFriendCount() > 0){
+                for(int i=0; i<history.getNPlayers(); i++){
+                    if(history.getPlayerType(i) == GameHistory.PlayerType.NEUTRAL){
+                        if(history.getPlayerType(history.playerShotAt(i)) 
+                                                    == GameHistory.PlayerType.FRIEND){
+                            mTarget = i;
+                        }
                     }
                 }
-            }
-             for(int i=0; i<history.getNPlayers(); i++){
-                if(history.getPlayerType(i) == GameHistory.PlayerType.THREAT){
-                    if(history.getPlayerType(history.playerShotAt(i)) 
-                                                == GameHistory.PlayerType.FRIEND){
-                        mTarget = i;
+                for(int i=0; i<history.getNPlayers(); i++){
+                    if(history.getPlayerType(i) == GameHistory.PlayerType.THREAT){
+                        if(history.getPlayerType(history.playerShotAt(i)) 
+                                                    == GameHistory.PlayerType.FRIEND){
+                            mTarget = i;
+                        }
                     }
                 }
-            }
-             for(int i=0; i<history.getNPlayers(); i++){
-                if(history.getPlayerType(i) == GameHistory.PlayerType.ENEMY){
-                    if(history.getPlayerType(history.playerShotAt(i)) 
-                                                == GameHistory.PlayerType.FRIEND){
-                        mTarget = i;
+                for(int i=0; i<history.getNPlayers(); i++){
+                    if(history.getPlayerType(i) == GameHistory.PlayerType.ENEMY){
+                        if(history.getPlayerType(history.playerShotAt(i)) 
+                                                    == GameHistory.PlayerType.FRIEND){
+                            mTarget = i;
+                        }
                     }
                 }
             }
@@ -82,16 +89,17 @@ public class PanicModeManager implements RoundListener {
         boolean reset = false;
         if(history.getRoundsCount() < 2)
             reset = true;
-        
-        for(int i=0; i<mEnemies.size(); i++){
-                if(!history.isAlive(mEnemies.get(i)))
-                    reset = true;
+        else{ 
+            for(int i=0; i<mEnemies.size(); i++){
+                    if(!history.isAlive(mEnemies.get(i)))
+                        reset = true;
+            }
         }
         
         //if an enemy dies, reset the list
         if(reset){
-            mEnemies.clear();
-            enemies.clear();
+                mEnemies.clear();
+                enemies.clear();
 
             for(int i=0; i<history.getNPlayers(); i++){
                  if(history.getPlayerType(i) == GameHistory.PlayerType.ENEMY && history.isAlive(i))
