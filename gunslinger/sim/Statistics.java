@@ -181,7 +181,7 @@ public class Statistics
             recompile = false;
             verbose = false;
             trace = false;
-            games = 10;
+            games = 500;
 
             // timeout
             if (args.length > 8)
@@ -277,7 +277,7 @@ public class Statistics
                 }
         	}
         }
-        PrintWriter writer = new PrintWriter("statistics.txt", "UTF-8");
+        PrintWriter writer = new PrintWriter("statistics.csv", "UTF-8");
         writer.println("e, f, group, score, freq, n, avgDeadEnemies, avgAliveFriends, avgAlive");
         for (TableRow row : data) {
         	writer.printf("%d,  %d, %s, %d, %d, %d, %f, %f, %f\n", row.e, row.f, row.group, row.score, row.scoreFrequency, row.n, row.avgFinalDeadEnemies, row.avgFinalAliveFriends, row.avgAlive);
