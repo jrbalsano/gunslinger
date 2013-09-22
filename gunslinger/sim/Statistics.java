@@ -196,8 +196,10 @@ public class Statistics
         playerNames = loadPlayerNames(playerPath);
         int nplayers = playerNames.length;
         
-        ArrayList<TableRow> data = new ArrayList<TableRow>();
-        
+        PrintWriter bigStatsWriter = new PrintWriter("bigstats.csv", "UTF-8");
+        bigStatsWriter.println("e, f, group, score, freq, n, avgDeadEnemies, avgAliveFriends, avgAlive");
+        PrintWriter littleStatsWriter = new PrintWriter("stats.csv", "UTF-8");
+        littleStatsWriter.println("e, f, n, group, avg. score, avg alive friends, avg dead enemies, average alive");
         for (nfriends = 0; nfriends < nplayers; nfriends++) {
         	for (nenemies = 0; nenemies + nfriends < nplayers; nenemies++) {
         		// additional constraint
@@ -261,6 +263,10 @@ public class Statistics
                     }
                 }
                 for (int team = 0; team < nplayers; team++) {
+                	double avgAliveFriends = 0;
+                	double avgDeadEnemies = 0;
+                	double avgScore = totalScores[team] / games;
+                	double avgAlive = 0;
                 	for (int score = 0; score < nfriends+nenemies+1+1; score++) {
                 		TableRow tr = new TableRow();
                 		tr.avgFinalDeadEnemies = deadEnemyAverages[score][team];
@@ -272,17 +278,20 @@ public class Statistics
                 		tr.scoreFrequency = scoreCounts[team][score];
                 		tr.n = nplayers;
                 		tr.avgAlive = averageAlive[score][team];
-                		data.add(tr);
+                		bigStatsWriter.printf("%d,  %d, %s, %d, %d, %d, %f, %f, %f\n", tr.e, tr.f, tr.group, tr.score, tr.scoreFrequency, tr.n, tr.avgFinalDeadEnemies, tr.avgFinalAliveFriends, tr.avgAlive);
+                		avgAliveFriends += aliveFriendAverages[score][team] * scoreCounts[team][score];
+                		avgDeadEnemies += deadEnemyAverages[score][team] * scoreCounts[team][score];
+                		avgAlive += averageAlive[score][team] * scoreCounts[team][score];
                 	}
+                	avgAliveFriends /= games;
+                	avgDeadEnemies /= games;
+                	avgAlive /= games;
+                	littleStatsWriter.printf("%d, %d, %d, %s, %f, %f, %f, %f\n", nenemies, nfriends, nplayers, playerNames[team], avgScore, avgAliveFriends, avgDeadEnemies, avgAlive);
                 }
         	}
         }
-        PrintWriter writer = new PrintWriter("statistics.csv", "UTF-8");
-        writer.println("e, f, group, score, freq, n, avgDeadEnemies, avgAliveFriends, avgAlive");
-        for (TableRow row : data) {
-        	writer.printf("%d,  %d, %s, %d, %d, %d, %f, %f, %f\n", row.e, row.f, row.group, row.score, row.scoreFrequency, row.n, row.avgFinalDeadEnemies, row.avgFinalAliveFriends, row.avgAlive);
-        }
-        writer.close();
+        bigStatsWriter.close();
+        littleStatsWriter.close();
         // Force stopping all pending threads
         System.exit(0);
     }        
