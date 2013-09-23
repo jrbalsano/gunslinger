@@ -128,6 +128,8 @@ public class GameHistory {
 	 * @return -1 if no shot fired, id of player shot otherwise
 	 */
 	public int playerShotAt(int player, int round) {
+        if (round < 0)
+            return -1;
 		if (round > mRoundsCount || player >= mNPlayers) {
 			throw new IllegalArgumentException();
 		}

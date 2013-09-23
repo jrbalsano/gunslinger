@@ -13,6 +13,8 @@ public class Event implements Comparable<Event> {
 	private int mTarget;
 	private PlayerType mShooterType;
 	private PlayerType mShotType;
+    private boolean mToDelete;
+    
 	
 	/*
 	Sample weights array
@@ -44,7 +46,7 @@ public class Event implements Comparable<Event> {
 		mShooterType = history.getPlayerType(mShooterId); 
 		mShotType = history.getPlayerType(mShotId);
 		mHistory = history;
-		System.out.println(mShooterId + " shot at " + mShotId);
+		System.out.println(mShooterType + " shot at " + mShotType);
         mToDelete = false;
 	
 		mDangerMultiplier = 1;
@@ -87,6 +89,7 @@ public class Event implements Comparable<Event> {
 	
 	private void resetDangerLevel() {
 		mDangerLevel = weights[mShooterType.ordinal()][mShotType.ordinal()];
+		mToDelete = mDangerLevel == 0;
 		mTarget = mShooterId;
 	}
 
