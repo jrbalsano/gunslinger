@@ -17,6 +17,7 @@ public class PanicModeManager implements RoundListener {
 	
     @Override
     public void onNewRound(GameHistory history) {
+        mIsPanicMode = false;
         mTarget = -1;
       
         //get SELF int value
@@ -35,24 +36,31 @@ public class PanicModeManager implements RoundListener {
             if(history.isAlive(i) && history.getPlayerType(i) == GameHistory.PlayerType.THREAT)
                 numThreats++;
         }
-        if(numThreats == 2)
+        if(numThreats >= 2)
             mIsPanicMode = true;
 
         //enemies/friends ratio == .2 (?)
         int eAlive = 0;
         int fAlive = 0;
-        double efRatio = 3.1415926;
+        int nAlive = 0;
+        double feRatio = 3.1415926;
+        double enRatio = 3.1415926;
 
         for(int i=0; i<history.getNPlayers(); i++){
-            if(history.isAlive(i) && history.getPlayerType(i) == GameHistory.PlayerType.THREAT)
+            if(history.isAlive(i) && history.getPlayerType(i) == GameHistory.PlayerType.ENEMY)
                 eAlive++;
             if(history.isAlive(i) && history.getPlayerType(i) == GameHistory.PlayerType.FRIEND)
                 fAlive++;
+            if(history.isAlive(i))
+                nAlive++;
         }
 
+        enRatio = (double)eAlive / (double)nAlive;
+
         if(eAlive != 0)
-            efRatio = (double)fAlive / (double)eAlive;
-        if(efRatio == .2 && eAlive <= 3)
+            feRatio = (double)fAlive / (double)eAlive;
+
+        if(enRatio >= 0.5)
             mIsPanicMode = true;
         
         //preserve self
