@@ -13,26 +13,23 @@ public class Event implements Comparable<Event> {
 	private PlayerType mShooterType;
 	private PlayerType mShotType;
 	
+	/*
+	Sample weights array
+	Use -1 for events that don't result in retaliation
+	//Weights                    F  	N  		T  		E		M
+	private int[][] weights = {{-1, 	-1, 	-1, 	-1, 	-1},
+	                           {17, 	6, 		-1, 	-1, 	-1},
+	                           {19, 	14, 	14, 	14, 	16},
+	                           {20, 	15, 	15, 	15, 	18},
+	                           {-1,		-1,		-1,		-1,		-1}}};
+	 */
+	
 	//Weights
-//	private static final int FRIEND_SHOOTS_FRIEND;
-//	private static final int FRIEND_SHOOTS_NEUTRAL;
-//	private static final int FRIEND_SHOOTS_THREAT = 4;
-//	private static final int FRIEND_SHOOTS_ENEMY = 2;
-//	private static final int FRIEND_SHOOTS_ME;
-	private static final int NEUTRAL_SHOOTS_FRIEND = 17;
-	private static final int NEUTRAL_SHOOTS_NEUTRAL = 6;
-//	private static final int NEUTRAL_SHOOTS_THREAT = 4;
-//	private static final int NEUTRAL_SHOOTS_ENEMY = 2;
-	private static final int THREAT_SHOOTS_ME = 16;
-	private static final int THREAT_SHOOTS_FRIEND = 19;
-	private static final int THREAT_SHOOTS_NEUTRAL = 14;
-	private static final int THREAT_SHOOTS_THREAT = 14;
-	private static final int THREAT_SHOOTS_ENEMY = 14;
-	private static final int ENEMY_SHOOTS_FRIEND = 20;
-	private static final int ENEMY_SHOOTS_NEUTRAL = 15;
-	private static final int ENEMY_SHOOTS_THREAT = 15;
-	private static final int ENEMY_SHOOTS_ENEMY = 15;
-	private static final int ENEMY_SHOOTS_ME = 18;
+	private int[][] weights = {{0, 		0, 		0, 		0,	 	0},
+	                           {17, 	6, 		-1, 	-1, 	-1},
+	                           {19, 	14, 	14, 	14, 	16},
+	                           {20, 	15, 	15, 	15, 	18},
+	                           {0,		0,		0,		0,		0}};
 	
 	// Exponential backoff rate
 	private static double MULTIPLIER = .55;
@@ -46,8 +43,10 @@ public class Event implements Comparable<Event> {
 		
 		System.out.println(mShooterType + " shot at " + mShotType);
 	
-		mTarget = -1;
 		resetDangerLevel();
+		if (mDangerLevel == -1) {
+			mTarget = -1;
+		}
 		mDangerMultiplier = 1;
 	}
 	
@@ -88,87 +87,7 @@ public class Event implements Comparable<Event> {
 	}
 	
 	private void resetDangerLevel() {
-		mDangerLevel = 0;
-		switch (mShooterType) {
-		case FRIEND:
-			switch (mShotType) {
-			case FRIEND:
-			case NEUTRAL:
-			case THREAT:
-			case ENEMY:
-			case SELF:
-				break;
-			}
-			break;
-		case THREAT:
-			switch (mShotType) {
-			case FRIEND:
-				mDangerLevel = THREAT_SHOOTS_FRIEND;
-				mTarget = mShooterId;
-				break;
-			case NEUTRAL:
-				mDangerLevel = THREAT_SHOOTS_NEUTRAL;
-				mTarget = mShooterId;
-				break;
-			case THREAT:
-				mDangerLevel = THREAT_SHOOTS_THREAT;
-				mTarget = mShooterId;
-				break;
-			case ENEMY:
-				mDangerLevel = THREAT_SHOOTS_ENEMY;
-				mTarget = mShooterId;
-				break;
-			case SELF:
-				mDangerLevel = THREAT_SHOOTS_ME;
-				mTarget = mShooterId;
-				break;
-			}
-			break;
-		case NEUTRAL:
-			switch (mShotType) {
-			case FRIEND:
-				mDangerLevel = NEUTRAL_SHOOTS_FRIEND;
-				mTarget = mShooterId;
-				break;
-			case NEUTRAL:
-				mDangerLevel = NEUTRAL_SHOOTS_NEUTRAL;
-				mTarget = mShooterId;
-				break;
-			case THREAT:
-			case ENEMY:
-				break;
-			case SELF:
-				mDangerLevel = THREAT_SHOOTS_ME;
-				mTarget = mShooterId;
-				break;
-			}
-			break;
-		case ENEMY:
-			switch (mShotType) {
-			case FRIEND:
-				mDangerLevel = ENEMY_SHOOTS_FRIEND;
-				mTarget = mShooterId;
-				break;
-			case NEUTRAL:
-				mDangerLevel = ENEMY_SHOOTS_NEUTRAL;
-				mTarget = mShooterId;
-				break;
-			case THREAT:
-				mDangerLevel = ENEMY_SHOOTS_THREAT;
-				mTarget = mShooterId;
-				break;
-			case ENEMY:
-				mDangerLevel = ENEMY_SHOOTS_ENEMY;
-				mTarget = mShooterId;
-				break;
-			case SELF:
-				mDangerLevel = ENEMY_SHOOTS_ME;
-				mTarget = mShooterId;
-				break;
-			}
-			break;
-		default:
-			break;
-		}
+		mDangerLevel = weights[mShooterType.ordinal()][mShotType.ordinal()];
+		mTarget = mShooterId;
 	}
 }
