@@ -1,3 +1,5 @@
+package gunslinger.g8;
+
 public class ConstantsGenerator {
 
     public static void main(String[] args) {
