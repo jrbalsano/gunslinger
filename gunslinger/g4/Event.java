@@ -44,14 +44,15 @@ public class Event implements Comparable<Event> {
 		mShooterType = history.getPlayerType(mShooterId); 
 		mShotType = history.getPlayerType(mShotId);
 		mHistory = history;
-		System.out.println(mShooterType + " shot at " + mShotType);
+		System.out.println(mShooterId + " shot at " + mShotId);
         mToDelete = false;
 	
+		mDangerMultiplier = 1;
 		resetDangerLevel();
 		if (mDangerLevel == -1) {
 			mToDelete = true;
 		}
-		mDangerMultiplier = 1;
+        adjustForTarget();
 	}
 	
 	public void onRoundPassed(GameHistory history) {

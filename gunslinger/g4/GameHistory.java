@@ -53,7 +53,7 @@ public class GameHistory {
 
         for (int player = 0; player < mNPlayers; player++) {
             mNRetaliate[player] = 0;
-            mMaxRetaliate[player] = 0;
+            mMaxRetaliate[player] = 1;
 		}
 
 		mRoundListeners = new LinkedList<RoundListener>();
@@ -84,13 +84,14 @@ public class GameHistory {
 					mPlayerTypes[i] = PlayerType.THREAT;
 				}
 			}
-
-            for (int player = 0; player < mNPlayers; player++) {
-                int target =playerShotAt(player, mRoundsCount - 1);
-                if (target >= 0) {
-                    mMaxRetaliate[target]++;
-                    if (playerShotAt(target) == player)
-                        mNRetaliate[target]++;
+            if (mRoundsCount >= 2) {
+                for (int player = 0; player < mNPlayers; player++) {
+                    int target = playerShotAt(player, mRoundsCount - 1);
+                    if ((target >= 0) && isAlive(player, 0)) {
+                        mMaxRetaliate[target]++;
+                        if (playerShotAt(target) == player)
+                            mNRetaliate[target]++;
+                    }
                 }
             }
 
@@ -127,8 +128,6 @@ public class GameHistory {
 	 * @return -1 if no shot fired, id of player shot otherwise
 	 */
 	public int playerShotAt(int player, int round) {
-        if (round < 0)
-            return -1;
 		if (round > mRoundsCount || player >= mNPlayers) {
 			throw new IllegalArgumentException();
 		}
