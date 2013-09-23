@@ -14,11 +14,11 @@ public class Player extends gunslinger.sim.Player
 
     private static int versions = 0;
     private int version = versions++;
-    public String name() { return "g3"; }
+    public String name() { return "g3" + (versions > 1 ? " v" + version : ""); }
 
     public void init(int nplayers, int[] friends, int enemies[])
     {
-		createLog = false;
+		createLog = true;
 
 		this.nplayers = nplayers;
         this.friends = friends.clone();
@@ -42,11 +42,11 @@ public class Player extends gunslinger.sim.Player
 		shooter = new int[oldRounds][nplayers];
 
 		if(createLog) try {
-			FileWriter fstream = new FileWriter("gunslinger/g3/log.txt");
+			FileWriter fstream = new FileWriter("gunslinger/g3/log.txt", true);
 			outfile = new PrintWriter(fstream);
-			outfile.println("Init:");
-			outfile.println(Integer.toString(id));
-			outfile.println(Arrays.toString(allegiance));
+			//outfile.println("Init:");
+			//outfile.println(Integer.toString(id));
+			outfile.println("\n" + Arrays.toString(allegiance));
 			outfile.flush();
 		} catch (Exception e){ }
 	}
@@ -59,9 +59,9 @@ public class Player extends gunslinger.sim.Player
 		roundNum++;
 
 		if(createLog) try {
-			outfile.println("\nRound " + Integer.toString(roundNum) + ":");
+			//outfile.println("\nRound " + Integer.toString(roundNum) + ":");
 			outfile.println(Arrays.toString(prevRound));
-			outfile.println(Arrays.toString(alive));
+			//outfile.println(Arrays.toString(alive));
 			outfile.flush();
 		} catch (Exception e){ }
 
@@ -72,9 +72,9 @@ public class Player extends gunslinger.sim.Player
 		double[] expectedShots = getExpectedShots(alive);
 
 		if(createLog) try {
-			outfile.println(Arrays.toString(shooter[0]));
+			//outfile.println(Arrays.toString(shooter[0]));
 			outfile.println(Arrays.toString(expectedShots));
-			outfile.flush();
+			//outfile.flush();
 		} catch (Exception e){ }
 
 		if(shooter[0][id] != -1 && alive[shooter[0][id]] && expectedShots[id] < ELIMINATION_THRESHOLD && allegiance[shooter[0][id]] != 1)
@@ -112,12 +112,18 @@ public class Player extends gunslinger.sim.Player
 					enemyId = i;
 				else if(expectedShots[i] < ELIMINATION_THRESHOLD)
 				{
-					if(shooter[0][enemyId] == -1 && (shooter[0][i] != -1 || expectedShots[i] > expectedShots[enemyId]))
-						enemyId = i;
-					else if(shooter[0][i] != -1 && allegiance[shooter[0][i]] > allegiance[shooter[0][enemyId]])
-						enemyId = i;
-					else if(allegiance[shooter[0][i]] == allegiance[shooter[0][enemyId]] && expectedShots[i] > expectedShots[enemyId])
-						enemyId = i;
+					if(shooter[0][enemyId] == -1)
+					{
+						if(shooter[0][i] != -1 || expectedShots[i] > expectedShots[enemyId])
+							enemyId = i;
+					}
+					else if(shooter[0][i] != -1)
+					{
+						if(allegiance[shooter[0][i]] > allegiance[shooter[0][enemyId]])
+							enemyId = i;
+						else if(allegiance[shooter[0][i]] == allegiance[shooter[0][enemyId]] && expectedShots[i] > expectedShots[enemyId])
+							enemyId = i;
+					}
 				}
 			}
 		}
@@ -142,8 +148,8 @@ public class Player extends gunslinger.sim.Player
 	}
 
 	private final double REPEAT_FACTOR       = +1.0;
-	private final double DEFENSE_FACTOR      = -0.7;
-	private final double RETALIATION_FACTOR  = +1.0;
+	private final double DEFENSE_FACTOR      = -0.3;
+	private final double RETALIATION_FACTOR  = +0.7;
 	private final double INERTIA_FACTOR      = -0.3;
 	private double[] getExpectedShots(boolean[] alive)
 	{
@@ -173,10 +179,10 @@ public class Player extends gunslinger.sim.Player
 				if(shooter[0][i] != -1 && shooter[0][i] != id)
 				{
 					expectedShots[i] = expectedShots[i] + REPEAT_FACTOR;
-					if(shooter[0][shooter[0][i]] != -1)
+					if(shooter[0][shooter[0][i]] != -1 && shooter[0][shooter[0][i]] != i)
 						expectedShots[i] = expectedShots[i] + DEFENSE_FACTOR;
 				}
-				if(history[roundNum -1][i] != -1 && history[roundNum -1][i] != id && alive[history[roundNum -1][i]])
+				if(history[roundNum -1][i] != -1 && history[roundNum -1][i] != id && alive[history[roundNum -1][i]] && history[roundNum -1][i] != shooter[0][i])
 				{
 					expectedShots[i] = expectedShots[i] + RETALIATION_FACTOR;
 					int target = history[roundNum -1][i];
