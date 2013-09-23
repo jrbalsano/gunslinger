@@ -7,7 +7,7 @@ public class Player extends gunslinger.sim.Player
     private static int versions = 0;
     private int playerNumber = versions++;
 
-    public static final String VERSION = "0.1.5";
+    public static final String VERSION = "";
 
     // Attributes to use in the feature vector
     private final int NUM_FEATURES = 7;
@@ -34,7 +34,7 @@ public class Player extends gunslinger.sim.Player
 
     public String name()
     {
-        return "g1(" + VERSION + ")" + (versions > 1 ? " v" + playerNumber : "");
+        return "g1" + (versions > 1 ? " v" + playerNumber : "");
     }
 
     public void init(int nplayers, int[] friends, int enemies[])

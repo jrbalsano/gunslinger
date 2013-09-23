@@ -1,8 +1,10 @@
-package gunslinger.g4;
+package gunslinger.g4cc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class GameHistory {
 	private int mId;
@@ -14,7 +16,7 @@ public class GameHistory {
 	private ArrayList<boolean[]> mAliveHistory;
 	private int mCurrentScore;
 	private LinkedList<RoundListener> mRoundListeners;
-	public enum PlayerType {FRIEND, NEUTRAL, THREAT, ENEMY, SELF};
+	public enum PlayerType {NEUTRAL, FRIEND, THREAT, ENEMY, SELF};
 	private PlayerType[] mPlayerTypes;
 
 	/**
@@ -114,7 +116,7 @@ public class GameHistory {
 			return mShotHistory.get(mRoundsCount - 1)[player];
 		}
 		else {
-			return mShotHistory.get(round - 1)[player];
+			return mShotHistory.get(round)[player];
 		}
 	}
 	
@@ -135,17 +137,13 @@ public class GameHistory {
 			}
 		}
 		else {
-			return mAliveHistory.get(round - 1)[player];
+			return mAliveHistory.get(round)[player];
 		}
 	}
 	
 	public PlayerType getPlayerType(int player) {
 		return mPlayerTypes[player];
 	}
-
-        public int getMyId(){
-                return mId;
-        }
 
 	public int getRoundsCount(){
 		return mRoundsCount;
