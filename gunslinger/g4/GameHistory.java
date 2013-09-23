@@ -2,9 +2,7 @@ package gunslinger.g4;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 public class GameHistory {
 	private int mId;
@@ -16,7 +14,7 @@ public class GameHistory {
 	private ArrayList<boolean[]> mAliveHistory;
 	private int mCurrentScore;
 	private LinkedList<RoundListener> mRoundListeners;
-	public enum PlayerType {NEUTRAL, FRIEND, THREAT, ENEMY, SELF};
+	public enum PlayerType {FRIEND, NEUTRAL, THREAT, ENEMY, SELF};
 	private PlayerType[] mPlayerTypes;
     private int[] mNRetaliate;
     private int[] mMaxRetaliate;
@@ -138,7 +136,7 @@ public class GameHistory {
 			return mShotHistory.get(mRoundsCount - 1)[player];
 		}
 		else {
-			return mShotHistory.get(round)[player];
+			return mShotHistory.get(round - 1)[player];
 		}
 	}
 	
@@ -159,7 +157,7 @@ public class GameHistory {
 			}
 		}
 		else {
-			return mAliveHistory.get(round)[player];
+			return mAliveHistory.get(round - 1)[player];
 		}
 	}
 	
