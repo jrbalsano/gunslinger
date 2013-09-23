@@ -25,11 +25,11 @@ public class Event implements Comparable<Event> {
 	 */
 	
 	//Weights
-	private int[][] weights = {{-1, 	-1, 	-1, 	-1, 	-1},
+	private int[][] weights = {{0, 		0, 		0, 		0,	 	0},
 	                           {17, 	6, 		-1, 	-1, 	-1},
 	                           {19, 	14, 	14, 	14, 	16},
 	                           {20, 	15, 	15, 	15, 	18},
-	                           {-1,		-1,		-1,		-1,		-1}};
+	                           {0,		0,		0,		0,		0}};
 	
 	// Exponential backoff rate
 	private static double MULTIPLIER = .55;
