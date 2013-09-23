@@ -88,7 +88,7 @@ public class GameHistory {
 			}
 
             for (int player = 0; player < mNPlayers; player++) {
-                int target = playerShotAt(player, mRoundsCount - 2);
+                int target =playerShotAt(player, mRoundsCount - 1);
                 if (target >= 0) {
                     mMaxRetaliate[target]++;
                     if (playerShotAt(target) == player)
