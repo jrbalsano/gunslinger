@@ -14,7 +14,6 @@ public class Event implements Comparable<Event> {
 	private PlayerType mShooterType;
 	private PlayerType mShotType;
     private boolean mToDelete;
-    
 	
 	/*
 	Sample weights array
@@ -27,6 +26,8 @@ public class Event implements Comparable<Event> {
 	                           {-1,		-1,		-1,		-1,		-1}}};
 	 */
 	
+    private static final int INFERIOR_PRIO = 1;
+
 	//Weights
 	private int[][] weights = {{0, 		0, 		0, 		0,	 	0},
 	                           {17, 	6, 		-1, 	-1, 	-1},
@@ -92,6 +93,9 @@ public class Event implements Comparable<Event> {
 	}
 
     private void adjustForTarget() {
+        if (mHistory.getInferior(mShooterId))
+            mDangerLevel += INFERIOR_PRIO;
+
         mDangerLevel += mHistory.getRetaliateRate(mShotId);
     }
 }
