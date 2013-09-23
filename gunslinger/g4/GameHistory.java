@@ -116,7 +116,7 @@ public class GameHistory {
 			return mShotHistory.get(mRoundsCount - 1)[player];
 		}
 		else {
-			return mShotHistory.get(round)[player];
+			return mShotHistory.get(round - 1)[player];
 		}
 	}
 	
@@ -137,7 +137,7 @@ public class GameHistory {
 			}
 		}
 		else {
-			return mAliveHistory.get(round)[player];
+			return mAliveHistory.get(round - 1)[player];
 		}
 	}
 	
