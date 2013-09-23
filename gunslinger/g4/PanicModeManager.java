@@ -20,11 +20,7 @@ public class PanicModeManager implements RoundListener {
         mTarget = -1;
       
         //get SELF int value
-        int self = 0;
-        for(int i=0; i<history.getNPlayers(); i++){
-            if(history.getPlayerType(i) == GameHistory.PlayerType.SELF)
-                self = i;
-        }
+        int self = history.getMyId();
 
         //threat retaliation failed (?) just threat case or help friend case
 
@@ -43,7 +39,19 @@ public class PanicModeManager implements RoundListener {
             mIsPanicMode = true;
 
         //enemies/friends ratio == .2 (?)
-        double efRatio = (double)history.getFriendCount() / (double)history.getEnemyCount();
+        int eAlive = 0;
+        int fAlive = 0;
+        double efRatio = 3.1415926;
+
+        for(int i=0; i<history.getNPlayers(); i++){
+            if(history.isAlive(i) && history.getPlayerType(i) == GameHistory.PlayerType.ENEMY)
+                eAlive++;
+            if(history.isAlive(i) && history.getPlayerType(i) == GameHistory.PlayerType.FRIEND)
+                fAlive++;
+        }
+
+        if(eAlive != 0)
+            efRatio = (double)fAlive / (double)eAlive;
         if(efRatio <= .2)
             mIsPanicMode = true;
         

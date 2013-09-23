@@ -145,6 +145,10 @@ public class GameHistory {
 		return mPlayerTypes[player];
 	}
 
+        public int getMyId(){
+                return mId;
+        }
+
 	public int getRoundsCount(){
 		return mRoundsCount;
 	}

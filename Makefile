@@ -1,4 +1,4 @@
-main: gunslinger/sim/Gunslinger.class gunslinger/dumb/Player.class gunslinger/g4cc/Player.class
+main: gunslinger/sim/Gunslinger.class gunslinger/dumb/Player.class gunslinger/g4/Player.class
 
 gunslinger/sim/Gunslinger.class: gunslinger/sim/Gunslinger.java gunslinger/sim/Player.java
 	javac gunslinger/sim/Gunslinger.java gunslinger/sim/Player.java
@@ -14,7 +14,7 @@ gunslinger/g4cc/Player.class: gunslinger/g4cc/*.java gunslinger/sim/Player.java
 
 .PHONY:
 tour: main
-	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 false true false false 100
+	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 false false false false 1000
 
 .PHONY:
 round: main
