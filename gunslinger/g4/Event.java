@@ -27,8 +27,6 @@ public class Event implements Comparable<Event> {
 	                           {-1,		-1,		-1,		-1,		-1}}};
 	 */
 	
-    private boolean mToDelete;
-
 	//Weights
 	private int[][] weights = {{0, 		0, 		0, 		0,	 	0},
 	                           {17, 	6, 		-1, 	-1, 	-1},
