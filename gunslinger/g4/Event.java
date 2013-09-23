@@ -14,7 +14,8 @@ public class Event implements Comparable<Event> {
 	private PlayerType mShooterType;
 	private PlayerType mShotType;
     private boolean mToDelete;
-    
+    private static final int INFERIOR_PRIO = 1;
+
 	//Weights
 //	private static final int FRIEND_SHOOTS_FRIEND;
 //	private static final int FRIEND_SHOOTS_NEUTRAL;
@@ -171,6 +172,9 @@ public class Event implements Comparable<Event> {
 	}
 
     private void adjustForTarget() {
+        if (mHistory.getInferior(mShooterId))
+            mDangerLevel += INFERIOR_PRIO;
+
         mDangerLevel += mHistory.getRetaliateRate(mShotId);
     }
 }
