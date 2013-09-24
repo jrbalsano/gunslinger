@@ -26,7 +26,7 @@ public class Event implements Comparable<Event> {
 	                           {-1,		-1,		-1,		-1,		-1}}};
 	 */
 	
-    private static final int INFERIOR_PRIO = 1;
+    private static final int INFERIOR_PRIO = 3;
 
 	//Weights
 	private int[][] weights = {{0, 		0, 		0, 		0,	 	0},
@@ -50,9 +50,6 @@ public class Event implements Comparable<Event> {
 	
 		mDangerMultiplier = 1;
 		resetDangerLevel();
-		if (mDangerLevel == -1) {
-			mToDelete = true;
-		}
         adjustForTarget();
 	}
 	
@@ -95,7 +92,6 @@ public class Event implements Comparable<Event> {
     private void adjustForTarget() {
         if (mHistory.getInferior(mShooterId))
             mDangerLevel += INFERIOR_PRIO;
-
-        mDangerLevel += mHistory.getRetaliateRate(mShotId);
+            //mDangerLevel += mHistory.getRetaliateRate(mShotId);
     }
 }
