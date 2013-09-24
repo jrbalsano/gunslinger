@@ -5,6 +5,7 @@ import gunslinger.g4.GameHistory.PlayerType;
 public class Event implements Comparable<Event> {
 	// The threat level that this event poses. Higher numbers denote greater
 	// threat.
+    private GameHistory mHistory;
 	private double mDangerLevel;
 	private double mDangerMultiplier;
 	private int mShooterId;
@@ -12,6 +13,7 @@ public class Event implements Comparable<Event> {
 	private int mTarget;
 	private PlayerType mShooterType;
 	private PlayerType mShotType;
+    private boolean mToDelete;
 	
 	/*
 	Sample weights array
@@ -24,6 +26,8 @@ public class Event implements Comparable<Event> {
 	                           {-1,		-1,		-1,		-1,		-1}}};
 	 */
 	
+    private static final int INFERIOR_PRIO = 3;
+
 	//Weights
 	private int[][] weights = {{0, 		0, 		0, 		0,	 	0},
 	                           {17, 	6, 		-1, 	-1, 	-1},
@@ -40,33 +44,22 @@ public class Event implements Comparable<Event> {
 		mShotId = history.playerShotAt(mShooterId);
 		mShooterType = history.getPlayerType(mShooterId); 
 		mShotType = history.getPlayerType(mShotId);
-		
+		mHistory = history;
 		System.out.println(mShooterType + " shot at " + mShotType);
+        mToDelete = false;
 	
-		resetDangerLevel();
-		if (mDangerLevel == -1) {
-			mTarget = -1;
-		}
 		mDangerMultiplier = 1;
+		resetDangerLevel();
+        adjustForTarget();
 	}
 	
 	public void onRoundPassed(GameHistory history) {
 		if (!history.isAlive(mShotId) || !history.isAlive(mShooterId)) {
-			mDangerLevel = 0;
+			mToDelete = true;
 			return;
 		}
-		boolean dangerLevelChanged = false;
-		if (mShotType == PlayerType.NEUTRAL) {
-			mShotType = history.getPlayerType(mShotId);
-			dangerLevelChanged = true;
-		}
-		if (mShooterType == PlayerType.NEUTRAL) {
-			mShooterType = history.getPlayerType(mShotId);
-			dangerLevelChanged = true;
-		} 
-		if (dangerLevelChanged) {
-			resetDangerLevel();
-		}
+        resetDangerLevel();
+        adjustForTarget();
 		adjustBackoffMultiplier();
 	}
 	
@@ -77,6 +70,10 @@ public class Event implements Comparable<Event> {
 	public double getDangerScore() {
 		return mDangerLevel * mDangerMultiplier;
 	}
+    
+    public boolean getToDelete() {
+        return mToDelete;
+    }
 	
 	public int getTarget() {
 		return mTarget;
@@ -88,6 +85,13 @@ public class Event implements Comparable<Event> {
 	
 	private void resetDangerLevel() {
 		mDangerLevel = weights[mShooterType.ordinal()][mShotType.ordinal()];
+		mToDelete = mDangerLevel == 0;
 		mTarget = mShooterId;
 	}
+
+    private void adjustForTarget() {
+        if (mHistory.getInferior(mShooterId))
+            mDangerLevel += INFERIOR_PRIO;
+        //mDangerLevel += mHistory.getRetaliateRate(mShotId);
+    }
 }

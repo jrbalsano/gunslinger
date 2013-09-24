@@ -16,6 +16,9 @@ public class GameHistory {
 	private LinkedList<RoundListener> mRoundListeners;
 	public enum PlayerType {FRIEND, NEUTRAL, THREAT, ENEMY, SELF};
 	private PlayerType[] mPlayerTypes;
+    private int[] mNRetaliate;
+    private int[] mMaxRetaliate;
+    private boolean[] mInferior;
 
 	/**
 	 * Creates a new game history object for the current player
@@ -31,7 +34,7 @@ public class GameHistory {
 		mFriendCount = 0;
 		mEnemyCount = 0;
 		mPlayerTypes = new PlayerType[nPlayers];
-		
+
 		Arrays.fill(mPlayerTypes, PlayerType.NEUTRAL);
 		mPlayerTypes[mId] = PlayerType.SELF;
 		for (int player : friends) {
@@ -44,7 +47,17 @@ public class GameHistory {
 		}
 		// Initialize score
 		mCurrentScore = 1 + mFriendCount;
-		
+
+		mNRetaliate = new int[nPlayers];
+        mMaxRetaliate = new int[nPlayers];
+        mInferior = new boolean[nPlayers];
+        for (int player = 0; player < mNPlayers; player++) {
+            mNRetaliate[player] = 0;
+            mMaxRetaliate[player] = 1;
+            mMaxRetaliate[player] = 0;
+            mInferior[player] = false;
+		}
+
 		mRoundListeners = new LinkedList<RoundListener>();
 	}
 	
@@ -73,7 +86,32 @@ public class GameHistory {
 					mPlayerTypes[i] = PlayerType.THREAT;
 				}
 			}
-			
+            if (mRoundsCount >= 2) {
+                for (int player = 0; player < mNPlayers; player++) {
+                    int target = playerShotAt(player, mRoundsCount - 1);
+                    if ((target >= 0) && isAlive(player, mRoundsCount -1)) {
+                        mMaxRetaliate[target]++;
+                        if (playerShotAt(target) == player)
+                            mNRetaliate[target]++;
+                    }
+                }
+            }
+            for (int player = 0; player < mNPlayers; player++) {
+                int target = playerShotAt(player);
+                if (target >= 0) {
+                    boolean inferior = true;
+                    // mark people that shot someone, who did not shoot any valid target
+                    // in other word, the player that has no reason to be retaliated
+                    for (int round = 1; round < mRoundsCount; round++) {
+                        if ((playerShotAt(target, round) >= 0) &&
+                            isAlive(playerShotAt(target, round), 0))
+                            inferior = false;
+                    } 
+                    // If I declare him inferior, he will forever be...
+                    mInferior[player] |= inferior;
+                 }
+            }
+            
 			// Notify round listeners that a new round is available
 			notifyRoundListeners();
 		}
@@ -111,7 +149,7 @@ public class GameHistory {
 			throw new IllegalArgumentException();
 		}
 		else if (round == 0) {
-			return mShotHistory.get(mRoundsCount - 1)[player];
+			return mShotHistory.get(mRoundsCount - 2)[player];
 		}
 		else {
 			return mShotHistory.get(round - 1)[player];
@@ -150,6 +188,14 @@ public class GameHistory {
 	public int getEnemyCount() {
 		return mEnemyCount;
 	}
+
+    public boolean getInferior(int player) {
+        return mInferior[player];
+    }
+    
+    public double getRetaliateRate(int player) {
+        return (double)mNRetaliate[player]/mMaxRetaliate[player];
+    }
 	
 	private void notifyRoundListeners() {
 		for (RoundListener rl : mRoundListeners) {

@@ -15,7 +15,7 @@ public class EventManager implements RoundListener {
 		LinkedList<Event> toRemove = new LinkedList<Event>();
 		for (Event event : mEvents) {
 			event.onRoundPassed(history);
-			if (event.getDangerScore() == 0)
+			if (event.getToDelete())
 				toRemove.add(event);
 		}
 
