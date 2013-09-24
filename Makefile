@@ -1,4 +1,4 @@
-main: gunslinger/sim/Gunslinger.class gunslinger/g4/Player.class
+main: gunslinger/sim/Gunslinger.class gunslinger/dumb/Player.class gunslinger/g4/Player.class
 
 gunslinger/sim/Gunslinger.class: gunslinger/sim/Gunslinger.java gunslinger/sim/Player.java
 	javac gunslinger/sim/Gunslinger.java gunslinger/sim/Player.java

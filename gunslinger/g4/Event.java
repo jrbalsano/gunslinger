@@ -92,6 +92,6 @@ public class Event implements Comparable<Event> {
     private void adjustForTarget() {
         if (mHistory.getInferior(mShooterId))
             mDangerLevel += INFERIOR_PRIO;
-            //mDangerLevel += mHistory.getRetaliateRate(mShotId);
+        //mDangerLevel += mHistory.getRetaliateRate(mShotId);
     }
 }
