@@ -149,7 +149,7 @@ public class GameHistory {
 			throw new IllegalArgumentException();
 		}
 		else if (round == 0) {
-			return mShotHistory.get(mRoundsCount - 2)[player];
+			return mShotHistory.get(mRoundsCount - 1)[player];
 		}
 		else {
 			return mShotHistory.get(round - 1)[player];
