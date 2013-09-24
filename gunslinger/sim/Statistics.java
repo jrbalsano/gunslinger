@@ -181,7 +181,7 @@ public class Statistics
             recompile = false;
             verbose = false;
             trace = false;
-            games = 500;
+            games = 1000;
 
             // timeout
             if (args.length > 8)
@@ -267,7 +267,7 @@ public class Statistics
                 for (int team = 0; team < nplayers; team++) {
                 	double avgAliveFriends = 0;
                 	double avgDeadEnemies = 0;
-                	double avgScore = totalScores[team] / games;
+                	double avgScore = (double)totalScores[team] / (double)games;
                 	double avgAlive = 0;
                 	for (int score = 0; score < nfriends+nenemies+1+1; score++) {
                 		TableRow tr = new TableRow();

@@ -60,8 +60,10 @@ public class PanicModeManager implements RoundListener {
         if(eAlive != 0)
             feRatio = (double)fAlive / (double)eAlive;
 
-        if(enRatio >= 0.5)
+        if(false)
             mIsPanicMode = true;
+       
+//        mIsPanicMode = false;
         
         //preserve self
         if(history.getRoundsCount() > 1){
