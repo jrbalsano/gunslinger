@@ -9,9 +9,12 @@ gunslinger/dumb/Player.class: gunslinger/dumb/Player.java gunslinger/sim/Player.
 gunslinger/g4/Player.class: gunslinger/g4/*.java gunslinger/sim/Player.java
 	javac gunslinger/g4/Player.java gunslinger/g4/*.java
 
+gunslinger/g4cc/Player.class: gunslinger/g4cc/*.java gunslinger/sim/Player.java
+	javac gunslinger/g4cc/Player.java gunslinger/g4cc/*.java
+
 .PHONY:
 tour: main
-	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 false true false false 100
+	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 false false false false 1000
 
 .PHONY:
 round: main
