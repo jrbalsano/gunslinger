@@ -11,7 +11,7 @@ gunslinger/g4/Player.class: gunslinger/g4/*.java gunslinger/sim/Player.java
 
 .PHONY:
 tour: main
-	java gunslinger.sim.Gunslinger gunslinger/players.list 2 2 false true false false 100
+	java gunslinger.sim.Gunslinger gunslinger/players.list 4 2 false false false false 500
 
 .PHONY:
 round: main

@@ -1,4 +1,4 @@
-package gunslinger.g4;
+package gunslinger.g4cc;
 
 import java.util.*;
 
@@ -52,8 +52,8 @@ public class Player extends gunslinger.sim.Player
 	{
 	
 		mHistory.addRound(prevRound, alive);
-//       		if (mPanicMode.isPanicMode())
-//			return mPanicMode.shoot();
+       		if (mPanicMode.isPanicMode())
+			return mPanicMode.shoot();
 		if (mLateGame.isLateGame())
             		return mLateGame.shoot();
 		int target = mManager.getBestShot();

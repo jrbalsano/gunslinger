@@ -181,7 +181,7 @@ public class Statistics
             recompile = false;
             verbose = false;
             trace = false;
-            games = 500;
+            games = 1000;
 
             // timeout
             if (args.length > 8)
